@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<div class="container-fluid">
+  <mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened>
+      <app-aside></app-aside>
+    </mat-drawer>
+    <mat-drawer-content>
+      <app-header></app-header>
+      <div class="container" style="margin-top:30px">
+      <button class="btn button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Launch new project
+        <i class="fa fa-plus ms-2"></i>
+      </button>
+      <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-4" *ngFor="let card of projectCards">
+          <div class="card project-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="status-indicator" style="padding-top:2px" [style.background-color]="getStatusColor(card.status)">
+                  <p [style.color]="getStatusTextColor(card.status)">{{ card.status }}</p>
+                </div>
+
+                <i class="fa-solid fa-ellipsis" style="cursor:pointer"></i>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <p style="font-weight:600; margin:0; margin-bottom:3px">{{ card.title }}</p>
+                </div>
+                <i class="fa-regular fa-circle-check" style="color: blue; font-weight:500" *ngIf="card.isCompleted"></i>
+              </div>
+              <p style="color:#9BABC6; margin:0; font-size:12px">{{ card.description }}</p>
+              <div class="rounded-images space-above">
+                <img *ngFor="let image of card.images" [src]="image" alt="Project Image" class="rounded-image">
+              </div>
+              <p style="color:#9BABC6; margin:0; font-size:12px; letter-spacing:2px; margin-top:10px">
+                <span  style="font-weight:500; color:#7637F5">Launch Date:</span> {{ card.launchDate }}
+              </p>
+              <!-- <div class="progress" style="margin-top:10px" role="progressbar" aria-label="Example with label"
+                [attr.aria-valuenow]="card.timeLeft" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" [style.width.%]="card.timeLeft"
+                  [style.background]="getProgressBarColor(card.timeLeft)">
+                  {{ card.timeLeft }}%
+                </div>
+              </div> -->
+              <div class="options d-flex justify-content-start " style="margin-top:13px">
+                <div class="d-flex justify-content-start" style="font-size:13px">
+                  <i class="fa-regular fa-comment-dots me-1" style="color:#9BABC6"></i>
+                  <a href="" class="comments" style="color:#9BABC6;">{{ card.commentsCount }} Comments</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border: 2px solid #7637F5; border-radius: 10px;">
+      <div class="modal-header" style="background-color: #7637F5; color: #fff; border-bottom: none;">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create a New Project</h1>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createProject()">
+          <div class="mb-3">
+            <label for="title" class="form-label">Project Name</label>
+            <input [(ngModel)]="title" name="title" type="text" class="form-control" id="projectName" placeholder="Enter project name" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Project Description</label>
+            <textarea [(ngModel)]="description" name="description" class="form-control" id="projectDescription" rows="3" placeholder="Enter project description" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="status" class="form-label">Project Status</label>
+            <select [(ngModel)]="status" name="status" class="form-select" id="projectStatus">
+              <option value="New">New</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Deadline">Deadline</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="deadlineDate" class="form-label">Deadline</label>
+            <input [(ngModel)]="deadlineDate" name="deadlineDate" type="date" class="form-control" id="deadlineDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="category" class="form-label">Project Category</label>
+            <input [(ngModel)]="category" name="category" type="text" class="form-control" id="projectCategory" placeholder="Enter project category" required>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn me-2" style="background-color:#7637F5!important; color:white; ">Create Project</button>
+            <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+

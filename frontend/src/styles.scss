@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'pangram';
+  src: url('../../frontend/src/assets/PangramSans-FreeForPersonalUse/Pangram/Pangram-Medium.otf') format('truetype'); /* Adjust the file path and format accordingly */
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body *:not(i) {
+  font-family: 'pangram', sans-serif !important;
+}

@@ -1,0 +1,128 @@
+@font-face {
+  font-family: 'pangram';
+  src: url('../../../assets/PangramSans-FreeForPersonalUse/Pangram/Pangram-Medium.otf') format('truetype'); /* Adjust the file path and format accordingly */
+}
+
+
+.example-container {
+
+  width: 100%;
+  max-width: 400px;
+  display: inline-block;
+  vertical-align: top;
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 30px;
+  transition: box-shadow 0.3s ease-in-out;
+  min-height: 400px;
+}
+
+
+.example-list {
+  border-radius: 10px;
+  min-height: 250px;
+  margin-top:20px
+}
+
+
+.example-box {
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  background-color:#FFFFFF;
+  margin-bottom:14px;
+  border-radius:10px
+}
+
+
+.container-fluid {
+  height: 100%;
+}
+
+// .example-container {
+//   height: 100%;
+// }
+
+// mat-drawer-container {
+//   height: 100%;
+// }
+
+// mat-drawer {
+//   height: 100%;
+// }
+
+// mat-drawer-content {
+//   height: 100%;
+//   box-sizing: border-box;
+//   overflow: auto;
+// }
+
+
+
+.cdk-drag-preview {
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+
+
+*{
+  user-select: none;
+}
+
+
+
+/******************************************************************/
+
+
+
+.example-container {
+  background-color: #EBECF1;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+
+
+/********new styles******************************/
+h2{
+  color:black;
+  margin:6px 6px;
+  margin-top:3px;
+  font-size:15px!important;
+}
+.card-header i{
+  font-size:11px!important;
+}
+.priority-box{
+  padding:0px 6px;
+  font-size:10px;
+  border-radius:4px
+}
+.participant{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #9babc648;
+  border-radius: 6px;
+  padding:1px 8px;
+  margin-right: 6px;
+  color:#9BABC6;
+  margin-bottom:8px;
+  font-size:12px
+}
+
+
+
+
+
+
+

@@ -1,0 +1,109 @@
+.newProject{
+  color:#5bd746;
+  background-color:#59c34641;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius:4px;
+  font-weight:500
+}
+.card-body {
+  width: 100%; /* Adjust the width as needed */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  width: 100%; /* Adjust the width as needed */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.status-indicator{
+  padding:5px 10px;
+  display:flex;
+  height:25px;
+  justify-content: center;
+  border-radius:4px
+}
+.space-above {
+  margin-top: 10px; /* Adjust the space above as needed */
+}
+
+.rounded-images {
+  top: 0; /* Adjust the distance from the top as needed */
+  left: 10px; /* Adjust the left positioning as needed */
+  display: flex;
+}
+
+.rounded-image {
+  width: 25px; /* Adjust the width as needed */
+  height: 25px; /* Adjust the height as needed */
+  border-radius: 50%;
+  background-color: #ccc; /* Adjust the background color as needed */
+  margin-right: -10px; /* Adjust the negative margin to control the overlap */
+}
+.date-paragraph {
+  color: #333; /* Adjust the text color as needed */
+  font-size: 14px; /* Adjust the font size as needed */
+  margin-top: 20px; /* Adjust the margin-top as needed */
+}
+.comments{
+  text-decoration:none;
+  &:hover{
+    text-decoration:underline;
+  }
+}
+
+.project-card {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@font-face {
+  font-family: 'pangram';
+  src: url('../../../assets/PangramSans-FreeForPersonalUse/Pangram/Pangram-Medium.otf') format('truetype'); /* Adjust the file path and format accordingly */
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+.example-container {
+  height: 100%;
+}
+
+mat-drawer-container {
+  height: 100%;
+}
+
+mat-drawer {
+  height: 100%;
+}
+
+mat-drawer-content {
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+}
+.button{
+  padding: 10px 15px;
+  background-color: #7637F5;
+  color:white;
+  margin-bottom:20px;
+  &:hover{
+    background-color:#7637f5ea ;
+  }
+  &:active{
+    color:white
+  }
+}
