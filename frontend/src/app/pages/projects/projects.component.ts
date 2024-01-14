@@ -17,13 +17,13 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [WebRequestService]
 })
 export class ProjectsComponent implements OnInit{
+  project:any;
   status: any;
   deadlineDate: any;
   title: any;
   description: any;
   category: any;
   launchDate: any; 
-
   constructor(private fb: FormBuilder, private webRequestService: WebRequestService) {}
   ngOnInit(){
     this.getProjects()
@@ -118,6 +118,30 @@ getProgressBarColor(percentage: number): string {
         }
       );
     }
+    deleteProject() {
+      if (this.title) {
+        this.webRequestService.deleteProjectByTitle(this.title).subscribe(
+          (response:any) => {
+            console.log('Project deleted successfully', response);
+            this.projectCards = this.projectCards.filter(project => project.title !== this.title);
+            // Optionally, clear the title after successful deletion
+            this.title = '';
+          },
+          (error) => {
+            console.error('Error deleting project', error);
+            // Handle error, show a message, etc.
+          }
+        );
+      } else {
+        console.log('Please provide a project title.');
+      }
+    }
+    
+    
+    
+
+    
+  
   }
 
 

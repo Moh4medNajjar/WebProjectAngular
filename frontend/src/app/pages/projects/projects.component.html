@@ -14,6 +14,12 @@
         Launch new project
         <i class="fa fa-plus ms-2"></i>
       </button>
+      <div>
+        <button class="btn button" data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
+          Delete a project
+          <i class="fa fa-trash ms-2"></i>
+        </button>
+      </div>
       <div class="row">
         <div class="col-xs-12 col-md-6 col-lg-4 mb-4" *ngFor="let card of projectCards">
           <div class="card project-card">
@@ -104,5 +110,23 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="deleteProjectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border: 2px solid #FF4136; border-radius: 10px;">
+      <div class="modal-header" style="background-color: #FF4136; color: #fff; border-bottom: none;">
+        <h1 class="modal-title fs-5" id="deleteProjectModalLabel">Delete Project</h1>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this project?</p>
+        <div class="mb-3">
+          <label for="deleteProjectTitle" class="form-label">Project Title</label>
+          <input type="text" class="form-control" id="deleteProjectTitle" [(ngModel)]="title" placeholder="Enter project title" required>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn me-2" style="background-color: #FF4136; color: white;" (click)="deleteProject()">Delete Project</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+
 
 
