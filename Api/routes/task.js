@@ -11,6 +11,23 @@ router.get('/all', async (req, res) => {
   }
 });
 
+// Get a task by id
+router.get('/:id', async (req, res) => {
+  const taskId = req.params.id;
+
+  try {
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 //add a task
 router.post('/add',  (req, res) => {

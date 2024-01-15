@@ -7,6 +7,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 })
 export class WebRequestService {
 
+
   constructor(private http: HttpClient) { }
 
   registerUser(data: any):Observable<any>{
@@ -17,9 +18,20 @@ export class WebRequestService {
     return this.http.post('http://127.0.0.1:3000/user/login', data)
   }
 
-  findProjects(): Observable<any>{
+  getProjects(): Observable<any>{
     return this.http.get(`http://127.0.0.1:3000/project`)
   }
+
+  getProjectById(id: string): Observable<any> {
+    const url = `http://127.0.0.1:3000/project/${id}`;
+    return this.http.get(url);
+  }
+
+  getTaskById(taskId: string): Observable<any> {
+    const url = `http://127.0.0.1:3000/task/${taskId}`; // Remove the colon before TaskId
+    return this.http.get(url);
+  }
+
 
   addProject(data: any): Observable<any> {
     return this.http.post('http://127.0.0.1:3000/project', data)

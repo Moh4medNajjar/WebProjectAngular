@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { AsideComponent } from '../../layout/aside/aside.component';
 import { HeaderComponent } from '../../layout/header/header.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -11,29 +11,51 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule,HttpClientModule,FormsModule ,AsideComponent, HeaderComponent, RouterOutlet, MatSidenavModule],
+  imports: [RouterModule ,CommonModule,HttpClientModule,FormsModule ,AsideComponent, HeaderComponent, RouterOutlet, MatSidenavModule],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
-  providers: [WebRequestService]
+  providers: [WebRequestService, DatePipe]
 })
-export class ProjectsComponent implements OnInit{
+export class ProjectsComponent {
+  id: any;
   status: any;
   deadlineDate: any;
   title: any;
   description: any;
   category: any;
-  launchDate: any; 
+  launchDate: any;
+  timeLeftPercentage: any
 
-  constructor(private fb: FormBuilder, private webRequestService: WebRequestService) {}
-  ngOnInit(){
-    this.getProjects()
+  constructor(private router: Router, private fb: FormBuilder, private webRequestService: WebRequestService, private datePipe: DatePipe) {}
+
+  ngOnInit() {
+    this.fetchProjects();
   }
+
+
+  fetchProjects() {
+    this.webRequestService.getProjects().subscribe(
+      (projects: any[]) => {
+
+        this.projectCards = projects;
+        console.log(projects)
+      },
+      (error: any) => {
+        console.error('Error fetching projects', error);
+      }
+    );
+  }
+
+onProjectClick(projectId: string): void {
+  this.router.navigate(['/home/project', projectId]);
+}
+
 
   projectCards = [
     {
       title: 'Medical app development',
       status: 'New',
-      isCompleted: false,
+      isCompleted: true,
       description: 'Some descriptions about the project',
       images: [
         '../../../assets/image.png',
@@ -42,10 +64,20 @@ export class ProjectsComponent implements OnInit{
         '../../../assets/image.png'
       ],
       launchDate: 'January 10, 2024',
-      commentsCount: 65
+      deadlineDate: 'January 10, 2024',
+      _id:"cgfgxdf",
+      commentsCount: 65,
+      timeLeftPercentage: 40,
     },
 
   ];
+
+  calculateTimeLeftPercentage(launchDate: any, deadline: any): number {
+    const now = new Date();
+    const totalDuration = deadline.getTime() - launchDate.getTime();
+    const elapsedTime = now.getTime() - launchDate.getTime();
+    return Math.min((elapsedTime / totalDuration) * 100, 100);
+  }
 
 getProgressBarColor(percentage: number): string {
     if (percentage < 30) {
@@ -84,20 +116,6 @@ getProgressBarColor(percentage: number): string {
         return '';
     }
   }
-  /*******************************************************/
-  getProjects(){
-    this.webRequestService.findProjects().subscribe(
-      (project) => {
-        this.projectCards.push(project)
-      },
-      (error) =>{
-        console.log("error finding projects from database")
-        console.log(error)
-      }
-
-    )
-  }
-  /***********************************************************/
   createProject() {
     const projectData = {
       title: this.title,
@@ -105,19 +123,23 @@ getProgressBarColor(percentage: number): string {
       deadlineDate: this.deadlineDate,
       category: this.category,
       status: this.status,
-      launchDate: Date.now()
+      launchDate: Date.now(),
     };
-      this.webRequestService.addProject(projectData).subscribe(
-        (response: any) => {
-          console.log('Project created successfully', response);
-          //other treatments..
-          this.projectCards.push(response)
-        },
-        (error: any) => {
-          console.error('Error creating project', error);
-        }
-      );
-    }
+
+    this.webRequestService.addProject(projectData).subscribe(
+      (response: any) => {
+        console.log('Project created successfully', response);
+        //other treatments..
+        this.projectCards.push(response);
+      },
+      (error: any) => {
+        console.error('Error creating project', error);
+      }
+    );
+}
+
+
+
   }
 
 

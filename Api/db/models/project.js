@@ -5,8 +5,10 @@ const projectSchema = new mongoose.Schema({
   description: String,
   status: { type: String, enum: ['New', 'In Progress', 'Deadline'], default: 'New' },
   category: String,
-  launchDate: Date,
+  launchDate: Number,
   deadlineDate: Date,
+  timeLeftPercentage: Number,
+  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'task'}],
 });
 
 

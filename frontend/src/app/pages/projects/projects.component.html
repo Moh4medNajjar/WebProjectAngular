@@ -15,7 +15,7 @@
         <i class="fa fa-plus ms-2"></i>
       </button>
       <div class="row">
-        <div class="col-xs-12 col-md-6 col-lg-4 mb-4" *ngFor="let card of projectCards">
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-4" *ngFor="let card of projectCards" (click)="onProjectClick(card._id)">
           <div class="card project-card">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
@@ -36,15 +36,14 @@
                 <img *ngFor="let image of card.images" [src]="image" alt="Project Image" class="rounded-image">
               </div>
               <p style="color:#9BABC6; margin:0; font-size:12px; letter-spacing:2px; margin-top:10px">
-                <span  style="font-weight:500; color:#7637F5">Launch Date:</span> {{ card.launchDate }}
+                <span style="font-weight:500; color:#7637F5">Launch Date:</span>
+                {{ card.launchDate | date: 'longDate' }}
               </p>
-              <!-- <div class="progress" style="margin-top:10px" role="progressbar" aria-label="Example with label"
-                [attr.aria-valuenow]="card.timeLeft" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-bar" [style.width.%]="card.timeLeft"
-                  [style.background]="getProgressBarColor(card.timeLeft)">
-                  {{ card.timeLeft }}%
-                </div>
-              </div> -->
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" [style.width.%]="card.timeLeftPercentage" [attr.aria-valuenow]="card.timeLeftPercentage" aria-valuemin="0" aria-valuemax="100">{{ card.timeLeftPercentage }}%</div>
+              </div>
+
+
               <div class="options d-flex justify-content-start " style="margin-top:13px">
                 <div class="d-flex justify-content-start" style="font-size:13px">
                   <i class="fa-regular fa-comment-dots me-1" style="color:#9BABC6"></i>
@@ -96,7 +95,7 @@
             <input [(ngModel)]="category" name="category" type="text" class="form-control" id="projectCategory" placeholder="Enter project category" required>
           </div>
           <div class="d-flex justify-content-end">
-            <button type="submit" class="btn me-2" style="background-color:#7637F5!important; color:white; ">Create Project</button>
+            <button type="submit" class="btn me-2" style="background-color:#7637F5!important; color:white; " data-bs-dismiss="modal">Create Project</button>
             <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Close</button>
           </div>
         </form>

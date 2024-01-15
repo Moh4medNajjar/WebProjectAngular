@@ -11,7 +11,8 @@
     <mat-drawer-content>
       <app-header></app-header>
       <div class="container pt-5">
-        <h1 style="font-weight: 900;margin-bottom:40px; font-size:30px">Medical App</h1>
+        <h1 style="font-weight: 900; font-size:30px">{{projectName}}</h1>
+        <h1 style="font-weight: 400;margin-bottom:40px; font-size:17px; color:#9BABC6">{{projectDescription}}...</h1>
         <div class="row">
           <div class=" col-xs-12 col-lg-6 col-xl-3  ">
             <div class=" d-flex  justify-content-center align-items-center" >
@@ -42,13 +43,11 @@
                       </div>
                       <div class="priority-circle" ></div>
                       <p class="text-task" style="font-weight:700; font-size:16px;margin:0; margin-top:8px">{{item.title}}</p>
-                      <p class="text-description" style="margin:0px; color:#9BABC6; font-weight:400; font-size:smaller">This is a small brief about the task..</p>
+                      <p class="text-description" style="margin:0px; color:#9BABC6; font-weight:400; font-size:smaller">{{item.description}}</p>
                       <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <p style="margin:0; margin-bottom:4px; margin-top:4px; font-weight:500">Assigned to: </p>
                         <div class="d-flex flex-wrap justify-content-start align-items-center">
-                          <div class="participant">BenamorAziz12</div>
-                          <div class="participant">HamdiBcr45</div>
-                          <div class="participant">MohamedNajjar12</div>
+                          <div class="participant" *ngFor="let participant of item.participants">{{participant}}</div>
                         </div>
                       </div>
                       <div>
