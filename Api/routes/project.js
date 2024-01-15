@@ -56,5 +56,19 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+//delete by title
+router.delete('/delete/:title', async (req, res) => {
+  try {
+    console.log('Delete request received with title:', req.params.title);
+    const project = await Project.findOneAndDelete({ title: req.params.title });
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    res.json({ message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

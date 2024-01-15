@@ -36,6 +36,14 @@ export class WebRequestService {
   addProject(data: any): Observable<any> {
     return this.http.post('http://127.0.0.1:3000/project', data)
   }
+  private apiUrl = 'http://127.0.0.1:3000/project';
+  deleteProjectByTitle(title: string): Observable<any> {
+    const url = `${this.apiUrl}/delete/${title}`;
+    console.log('Delete URL:', url);
+    return this.http.delete(url);
+  }
+  
+  
   getUserDataFromToken(){
     const token = localStorage.getItem('token')
     if (!token) {

@@ -17,11 +17,12 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [WebRequestService, DatePipe]
 })
 export class ProjectsComponent {
-  id: any;
+
   status: any;
   deadlineDate: any;
   title: any;
   description: any;
+  id: any;
   category: any;
   launchDate: any;
   timeLeftPercentage: any
