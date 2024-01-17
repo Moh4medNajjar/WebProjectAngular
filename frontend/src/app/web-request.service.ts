@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
+import { User } from './user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,14 @@ export class WebRequestService {
     return this.http.get(url);
   }
 
+  
+  getUser(id: String): Observable<any> {
+    return this.http.get(`http://127.0.0.1:3000/user/getbyid/${id}`)
+  }
+
+  getUserId(username: String): Observable<any> {
+    return this.http.get(`http://127.0.0.1:3000/user/getbyname/${username}`)
+  }
 
   addProject(data: any): Observable<any> {
     return this.http.post('http://127.0.0.1:3000/project', data)
@@ -42,6 +51,12 @@ export class WebRequestService {
     console.log('Delete URL:', url);
     return this.http.delete(url);
   }
+
+
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`http://127.0.0.1:3000/user/all`);
+  }
+  
   
   
   getUserDataFromToken(){

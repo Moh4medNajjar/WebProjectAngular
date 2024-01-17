@@ -1,30 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../db/models/task');
-// Get all tasks
-router.get('/all', async (req, res) => {
+
+//Get all tasks
+router.get('/all/', async (req, res) => {
   try {
     const tasks = await Task.find();
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Get a task by id
-router.get('/:id', async (req, res) => {
-  const taskId = req.params.id;
 
+// Get all tasks by owner
+router.get('/all/:ownerId', async (req, res) => {
   try {
-    const task = await Task.findById(taskId);
+    const ownerId = req.params.ownerId;
+    const tasks = await Task.find({ owner: ownerId });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
+
+// Get task by Id
+router.get('/:taskId', async (req, res) => {
+  try {
+    const taskId = req.params.taskId;
+    const task = await Task.findById(taskId);
+    
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ error: 'Task not found' });
     }
 
-    res.json(task);
+    res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -66,9 +79,6 @@ router.delete('/delete/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
 
 
 module.exports = router;
