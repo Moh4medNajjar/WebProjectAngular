@@ -8,7 +8,6 @@ import {
   CdkDropList,
 } from '@angular/cdk/drag-drop';
 import { TaskService } from '../../task.service';
-import { Task } from '../../task.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
@@ -17,8 +16,6 @@ import { HeaderComponent } from '../../layout/header/header.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { UpdateTaskDialogComponent } from '../../update-task-dialog/update-task-dialog.component';
-import { NewTaskDialogComponent } from '../../new-task-dialog/new-task-dialog.component';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-project',
@@ -29,47 +26,127 @@ import { Router } from '@angular/router';
   providers: [TaskService, WebRequestService]
 })
 export class ProjectComponent {
-  public AllTasks: Task[] = [];
-  public AllOwnedTasks: Task[] = [];
-  public newTaskData: Task = {
-    _id: undefined,
-    title: '',
-    priority: '',
-    description: '',
-    due_date: new Date(),
-    owner: '',
-    assigned_to: '000000000000000000000000',
-    status: '',
-    category: '',
-    participants: [],
-    comments: [],
-    attachments: []
-  };
+updateTaskDialog(_t40: any) {
+throw new Error('Method not implemented.');
+}
+  taskParticipantsUsernames: string[] = [];
+  TaskData: any;
+  AllTasks: any;
 
-  public TaskData: Task = {
-    _id: undefined,
-    title: '',
-    priority: '',
-    description: '',
-    due_date: new Date(),
-    owner: '',
-    assigned_to: '000000000000000000000000',
-    status: '',
-    category: '',
-    participants: [],
-    comments: [],
-    attachments: []
-  };
+  constructor(public TaskService: TaskService, private router: Router, private dialog: MatDialog,
+    private route: ActivatedRoute,
+    public webRequestService: WebRequestService
+  ) {}
 
-  todo: Task[] = [];
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.projectId = params['id'];
+      this.fetchProjectDetails();
+    });
+  }
 
-  inProgress: Task[] = [];
+  private fetchProjectDetails(): void {
+    this.webRequestService.getProjectById(this.projectId).subscribe(
+      (project: any) => {
+        this.projectName = project.title;
+        this.projectDescription = project.description;
+        this.projectTasks = project.tasks;
 
-  done: Task[] = [];
+        this.processProjectTasks();
+      },
+      (error: any) => {
+        console.error('Error fetching project details', error);
+      }
+    );
+  }
 
-  participating: Task[] = [];
+  private processProjectTasks(): void {
+    for (let i = 0; i < this.projectTasks.length; i++) {
+      const element = this.projectTasks[i];
+      this.fetchTaskDetails(element);
+    }
 
-  inReview : Task[] = [];
+    console.log('Tasks in Todo:', this.todo);
+    console.log('Tasks in In Progress:', this.inProgress);
+    console.log('Tasks in In Review:', this.inReview);
+    console.log('Tasks in Done:', this.done);
+  }
+
+  private fetchTaskDetails(taskId: string): void {
+    this.webRequestService.getTaskById(taskId).subscribe(
+      (task) => {
+        this.updateTaskLists(task);
+        this.fetchTaskParticipants(task.participants);
+      },
+      (error) => {
+        this.handleTaskFetchError(error);
+      }
+    );
+  }
+
+  private updateTaskLists(task: any): void {
+    switch (task.status) {
+      case 'Todo':
+        this.todo.push(task);
+        break;
+      case 'In Progress':
+        this.inProgress.push(task);
+        break;
+      case 'In Review':
+        this.inReview.push(task);
+        break;
+      case 'Done':
+        this.done.push(task);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private fetchTaskParticipants(participantIds: string[]): void {
+    for (const participantId of participantIds) {
+      this.webRequestService.getUserDetails(participantId).subscribe(
+        user => {
+          const username = user.username;
+          this.taskParticipantsUsernames.push(username);
+        },
+        error => {
+          console.error(`Error fetching user details for participant ID ${participantId}:`, error);
+        }
+      );
+    }
+  }
+
+  private handleTaskFetchError(error: any): void {
+    console.error('Error fetching task details', error);
+    if (error.status === 404) {
+      console.log('Task not found. ID:', Element);
+      // Handle non-existent task (e.g., display a message)
+    } else {
+      console.log('Unexpected error while fetching task details:', error);
+      // Handle other errors
+    }
+  }
+
+
+
+  tasksParticipants:any = []
+  formatDate(inputDate: string): string {
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+    const formattedDate = new Date(inputDate).toLocaleDateString('en-GB', options);
+    return formattedDate;
+  }
+
+  todo: any[] = [];
+
+  inProgress: any[] = [];
+
+  inReview : any[] = [];
+
+  done: any[] = [];
+
+  participating: any[] = [];
+
 
 
   projectId: any;
@@ -77,164 +154,54 @@ export class ProjectComponent {
   projectDescription: any;
   projectTasks: any;
 
-  constructor(public TaskService: TaskService, private router: Router, private dialog: MatDialog,
-    private route: ActivatedRoute,
-    public webRequestService: WebRequestService
-  ) {}
-
-
-
-  ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.projectId = params['id'];
-      console.log(this.projectId);
-
-      this.webRequestService.getProjectById(this.projectId).subscribe(
-        (project: any) => {
-          this.projectName = project.title;
-          this.projectDescription = project.description;
-          this.projectTasks = project.tasks;
-          console.log(this.projectTasks);
-          this.getTasks();
-          this.getPartTasks();
-          // for (let i = 0; i < this.projectTasks.length; i++) {
-          //   console.log(this.projectTasks[i]);
-          //   let taskId = this.projectTasks[i];
-          //   this.webRequestService.getTaskById(taskId).subscribe(
-          //     (task: any) => {
-          //       console.log(task)
-          //       this.taskName = task.title;
-          //       this.taskDescription = task.description;
-          //       this.taskPriority = task.priority;
-          //       this.taskStatus = task.status;
-          //       this.taskOwner = task.owner;
-
-          //       console.log(this.taskStatus)
-
-          //     if (this.taskStatus === "Todo")
-          //       this.todo.push(task);
-
-          //     else if (this.taskStatus === "In Progress")
-          //       this.inProgress.push(this.projectTasks[i]);
-          //     else if (this.taskStatus === "In Review")
-          //       this.inReview.push(this.projectTasks[i]);
-          //     else if (this.taskStatus === "Done")
-          //       this.done.push(this.projectTasks[i]);
-
-          //     },
-          //     (error: any) => {
-          //       console.log('Error fetching task details', error)
-          //     },
-          //     (() => {
-          //       console.log(this.todo)
-          //     })
-
-
-          //   )
-
-
-          // }
-
-
-
-          
-
-
-        },
-        (error: any) => {
-          console.error('Error fetching project details', error);
-        }
-      );
-    });
-  }
-
-
-  public getTasks(): void {
-    this.todo = [];
-    this.inProgress = [];
-    this.done = [];
-    this.AllTasks = [];
-    this.AllOwnedTasks = [];
-    const ownerId = this.webRequestService.getUserDataFromToken()._id;
-
-    this.TaskService.getAllTasks(ownerId).subscribe((data: Task[]) => {
-      this.AllOwnedTasks = data;
-
-      if (this.AllOwnedTasks && Array.isArray(this.AllOwnedTasks)) {
-        this.AllOwnedTasks.forEach((task: Task) => {
-          switch (task.status) {
-            case 'Todo':
-              this.todo.push(task);
-              break;
-            case 'In Progress':
-              this.inProgress.push(task);
-              break;
-            case 'Done':
-              this.done.push(task);
-              break;
-            case 'In Review' :
-              this.inReview.push(task);
-              break;
-          }
-        });
-      }
-    });
-  }
-
 
 
 
   /*Task methods*/
-  taskName: string = "";
-  taskDescription: string = "";
-  taskPriority: string = "";
-  taskStatus: string = "";
-  taskOwner: string = "";
+  title: any;
+  description: any;
+  priority: any;
+  taskStatus: any;
+  taskOwner: any;
+  due_date: any;
 
 
+  saveNewTask(): void {
+    const userId = this.webRequestService.getUserDataFromToken()._id;
 
 
+    const taskData = {
+      title: this.title,
+      description: this.description,
+      due_date: this.due_date,
+      priority: this.priority,
+      owner: userId,
+      projectId: this.projectId,
+    };
 
-  public getPartTasks() {
-    this.participating = [];
-    this.AllTasks = [];
-    const ownerId = this.webRequestService.getUserDataFromToken()._id;
-    this.TaskService.getAllTasks().subscribe((data: Task[]) => {
-      this.AllTasks = data;
-      if (this.AllTasks && Array.isArray(this.AllTasks)) {
-        this.AllTasks.forEach((task: Task) => {
-          task.participants?.forEach((participant_id: string) => {
-            if (participant_id == ownerId) {
-              this.participating.push(task);
-            }
-          })
-        });
-      }
-    });
-  }
-
-
-
-
-  public newTask() {
-    this.newTaskData.status = 'Todo';
-    this.newTaskData.owner = this.webRequestService.getUserDataFromToken()._id;
-    this.TaskService.createTask(this.newTaskData).subscribe(
-      (response) => {
-        console.log('New task created:', response);
+    this.TaskService.createTask(taskData).subscribe(
+      (createdTask) => {
+        console.log('Task created successfully:', createdTask);
+        this.todo.push(createdTask);
       },
       (error) => {
         console.error('Error creating task:', error);
       }
     );
-    this.AllTasks.push(this.newTaskData);
-    this.getTasks();
   }
 
 
 
 
-  drop(event: CdkDragDrop<Task[]>) {
+
+
+
+
+
+
+
+
+  drop(event: CdkDragDrop<any[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -262,31 +229,16 @@ export class ProjectComponent {
   }
 
 
-  getPriorityColor(priority: string): string {
-    switch (priority.toLowerCase()) {
-      case 'high':
-        return '#FF7575';
-      case 'medium':
-        return '#FFD166';
-      case 'low':
-        return '#A3D9A5';
-      default:
-        return '#CCCCCC';
-    }
-  }
 
-
-
-  getPriorityTextColor(priority: string): string {
-    // Check if priority is not undefined before accessing toLowerCase()
+  getPriorityColor(priority: string | undefined): string {
     if (priority) {
       switch (priority.toLowerCase()) {
         case 'high':
-          return '#F92D73';
+          return '#FF5959';
         case 'medium':
-          return '#7637F5';
+          return '#FFCA5A';
         case 'low':
-          return 'goldenrod';
+          return '#85C1E9';
         default:
           return '#CCCCCC';
       }
@@ -295,27 +247,44 @@ export class ProjectComponent {
     }
   }
 
-  public unsubscribeTask(taskId: string): void {
+  getPriorityTextColor(priority: string | undefined): string {
+    if (priority) {
+      switch (priority.toLowerCase()) {
+        case 'high':
+        case 'medium':
+          return '#FFFFFF';
+        case 'low':
+          return '#FFFFFF';
+        default:
+          return '#CCCCCC';
+      }
+    } else {
+      return '#CCCCCC';
+    }
+  }
+
+
+  unsubscribeTask(taskId: string): void {
     const userId = this.webRequestService.getUserDataFromToken()._id;
-  
+
     this.TaskService.getTasksById(taskId).subscribe(
-      (data: Task) => {
+      (data: any) => {
         this.TaskData = data;
-  
+
         if (this.TaskData.participants) {
-          const indexToRemove = this.TaskData.participants.findIndex((id) => id === userId);
+          const indexToRemove = this.TaskData.participants.findIndex((id: any) => id === userId);
           const indexToRemove1 = this.participating.findIndex((id) => id === userId);
           if (indexToRemove !== -1) {
             this.TaskData.participants.splice(indexToRemove, 1);
             this.participating.splice(indexToRemove1, 1);
           }
         }
-  
+
         if (this.TaskData.assigned_to === userId) {
           this.TaskData.assigned_to = '000000000000000000000000';
         }
-  
-        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+
+        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
         this.getTasks();
       },
       (error) => {
@@ -323,16 +292,19 @@ export class ProjectComponent {
       }
     );
   }
-  
+  getTasks() {
+    throw new Error('Method not implemented.');
+  }
+
 
 
   public deleteTask(taskId: string): void {
     this.TaskService.getTasksById(taskId).subscribe((data) => {
-    this.TaskData = data; 
+    this.TaskData = data;
     this.TaskService.deleteTask(taskId).subscribe(
       () => {
         console.log('Task deleted successfully');
-        const indexToRemove = this.AllTasks.findIndex(task => task._id === this.TaskData._id);
+        const indexToRemove = this.AllTasks.findIndex((task: { _id: any; }) => task._id === this.TaskData._id);
         if (indexToRemove !== -1) {
           this.AllTasks.splice(indexToRemove, 1);
         }
@@ -343,39 +315,17 @@ export class ProjectComponent {
       }
     );})
   }
-
-  newTaskDialog() {
-
-    const dialogRef = this.dialog.open(NewTaskDialogComponent, {
-      width: '700px',
-      data: { newTaskData: this.newTaskData },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.newTask();
-      }
-    });
+  getPartTasks() {
+    throw new Error('Method not implemented.');
   }
 
 
 
 
-  updateTaskDialog(task: Task) {
-    let taskId = task._id;
-    const dialogRef = this.dialog.open(UpdateTaskDialogComponent, {
-      width: '700px',
-      data: { task },
-    });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.updateTask(taskId, result);
-      }
-    });
-  }
 
-  updateTask(taskId: string, updatedTask: Task) {
+
+  updateTask(taskId: string, updatedTask: any) {
     this.TaskService.updateTask(taskId, updatedTask).subscribe(
       (response) => {
         console.log('Task updated:', response);
@@ -383,7 +333,6 @@ export class ProjectComponent {
       },
       (error) => {
         console.error('Error updating task:', error);
-        // Handle error, display an error message, etc.
       }
     );
   }
@@ -391,10 +340,10 @@ export class ProjectComponent {
   openTask(taskId: string) {
     this.router.navigate(['task', taskId]);
   }
+
+
+  editTask(taskId: string, data: any):any{
+
+  }
 }
-
-
-
-
-
 

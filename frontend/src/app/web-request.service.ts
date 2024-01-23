@@ -29,7 +29,12 @@ export class WebRequestService {
   }
 
   getTaskById(taskId: string): Observable<any> {
-    const url = `http://127.0.0.1:3000/task/${taskId}`; // Remove the colon before TaskId
+    const url = `http://127.0.0.1:3000/task/${taskId}`;
+    return this.http.get(url);
+  }
+
+  getUserDetails(userId: string): Observable<any> {
+    const url = `http://127.0.0.1:3000/user/getById/${userId}`;
     return this.http.get(url);
   }
 
@@ -56,9 +61,9 @@ export class WebRequestService {
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`http://127.0.0.1:3000/user/all`);
   }
-  
-  
-  
+
+
+
   getUserDataFromToken(){
     const token = localStorage.getItem('token')
     if (!token) {

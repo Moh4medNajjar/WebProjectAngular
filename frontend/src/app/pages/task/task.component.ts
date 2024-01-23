@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ParamMap } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { TaskService } from '../../task.service';
-import { Task } from '../../task.model';
 import { User } from '../../user.model';
 import { WebRequestService } from './../../web-request.service';
 import { Observable } from 'rxjs';
@@ -54,7 +53,7 @@ export class TaskComponent implements OnInit {
   public participantsNames: string[] = [];
   public attachments: string[] = [];
   public comments: string[] = [];
-  public TaskData?: Task;
+  public TaskData?: any;
   public ownerName: string = '';
   public assignedName: string = '';
   private participantsNamesSet: Set<string> = new Set<string>();
@@ -90,7 +89,7 @@ export class TaskComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getTask().subscribe((data: Task) => {
+    this.getTask().subscribe((data: any) => {
       this.TaskData = data;
       this.title = this.TaskData.title || '';
       this.participants = this.TaskData.participants || [];
@@ -151,7 +150,7 @@ export class TaskComponent implements OnInit {
     return !date;
   };
 
-  public getTask(): Observable<Task> {
+  public getTask(): Observable<any> {
     return this.TaskService.getTasksById(this.taskId);
   }
 
@@ -186,12 +185,12 @@ export class TaskComponent implements OnInit {
                 this.TaskData?.participants?.push(data._id);
                 this.participantsSet.add(data._id);
               }
-              this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+              this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
             })
           }
         }
         if (this.participantsNames.length == 0)
-          this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+          this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
       }
     });
   }
@@ -212,13 +211,13 @@ export class TaskComponent implements OnInit {
           this.getUserId(this.assignedName).subscribe((data: any) => {
             if (this.TaskData)
               this.TaskData.assigned_to = data._id;
-            this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+            this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
           });
         }
         else {
           if (this.TaskData)
             this.TaskData.assigned_to = '000000000000000000000000';
-          this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+          this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
         }
       }
     });
@@ -238,7 +237,7 @@ export class TaskComponent implements OnInit {
       if (result && this.TaskData) {
         this.status = result.status;
         this.TaskData.status = result.status;
-        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
       }
     });
   }
@@ -253,7 +252,7 @@ export class TaskComponent implements OnInit {
       if (result && this.TaskData) {
         this.priority = result.priority;
         this.TaskData.priority = result.priority;
-        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+        this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
       }
     });
   }
@@ -267,7 +266,7 @@ export class TaskComponent implements OnInit {
     //console.log('Due Date updated:', this.due_date);
     if (this.TaskData) {
       this.TaskData.due_date = this.due_date || new Date();
-      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
     }
   }
 
@@ -275,11 +274,11 @@ export class TaskComponent implements OnInit {
     this.due_date = newDate;
     if (this.TaskData) {
       this.TaskData.due_date = this.due_date || new Date();
-      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
     }
   }
 
-  updateTask(taskId: string, updatedTask: Task) {
+  updateTask(taskId: string, updatedTask: any) {
     this.TaskService.updateTask(taskId, updatedTask).subscribe(
       (response) => {
         console.log('Task updated:', response);
@@ -321,16 +320,16 @@ export class TaskComponent implements OnInit {
   openSection(): void {
     this.descriptionState = this.descriptionState === 'visible' ? 'hidden' : 'visible';
   }
-  
+
 
 
 
   saveChanges() {
-    this.descriptionState = 'visible'; 
+    this.descriptionState = 'visible';
     this.description = this.editedDescription;
     if (this.TaskData) {
       this.TaskData.description = this.description;
-      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as Task);
+      this.updateTask(this.TaskData?._id, this.TaskData ?? {} as any);
       this.editingDescription = false;
     }
   }

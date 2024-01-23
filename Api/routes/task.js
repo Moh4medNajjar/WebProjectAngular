@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../db/models/task');
+const Project = require('../db/models/project');
 
 //Get all tasks
 router.get('/all/', async (req, res) => {
@@ -43,15 +44,36 @@ router.get('/:taskId', async (req, res) => {
 
 
 //add a task
-router.post('/add',  (req, res) => {
-  let data = req.body
-  let task = new Task(data);
-  task.save().then((newTask) => {
-    res.status(200).send(newTask);
-  }).catch((err) => {
-    res.status(400).send(err)
-  })
+router.post('/add', async (req, res) => {
+  try {
+    let data = req.body;
 
+    // Assuming 'projectId' is passed in the request body; adjust as needed
+    const projectId = data.projectId;
+
+    // Check if the project with the given ID exists
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).send({ message: 'Project not found' });
+    }
+
+    // Create a new task with the project ID
+    data.projectId = projectId;
+    let task = new Task(data);
+
+    // Save the task
+    const newTask = await task.save();
+
+    // Update the project's tasks array
+    project.tasks.push(newTask._id);
+    await project.save();
+
+    res.status(200).send(newTask);
+  } catch (err) {
+    console.error('Error creating task:', err);
+    res.status(400).send(err);
+  }
 });
 
 
